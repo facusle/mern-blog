@@ -29,17 +29,17 @@ export const signin = async (req, res, next) => {
      const { email, password } = req.body;
 
      if (!email || !password || email === '' || password === '') {
-          return next(errorHandler(400, 'All fields are required'));
+          return next(errorHandler(400, 'Hold on, nhập hết đi đã'));
      }
      User.findOne({
           email,
      }).then((data) => {
           if (!data) {
-               return next(errorHandler(404, 'User not found'));
+               return next(errorHandler(404, 'Email Bịp!'));
           } else {
                const comparePass = bcryptjs.compareSync(password, data.password);
                if (!comparePass) {
-                    next(errorHandler(400, 'Wrong password'));
+                    next(errorHandler(400, 'Có cái pass thôi cũng k nhớ'));
                } else {
                     const token = jwt.sign({ id: data._id }, process.env.JWT_SECRET_KEY);
                     const { password: passStoreInfinity, ...returnData } = data._doc;
