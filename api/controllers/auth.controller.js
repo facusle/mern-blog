@@ -52,3 +52,46 @@ export const signin = async (req, res, next) => {
           }
      });
 };
+export const google = async (req, res, next) => {
+     const { email, name, googlePhotoUrl } = req.body;
+     try {
+          User.findOne({
+               email,
+          }).then((data) => {
+               if (data) {
+                    const token = jwt.sign({ id: data._id }, process.env.JWT_SECRET_KEY);
+                    const { password: passStoreInfinity, ...returnData } = data._doc;
+                    res.status(200)
+                         .cookie('access_token', token, {
+                              httpOnly: true,
+                         })
+                         .json(returnData);
+               } else {
+                    const genPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+                    const hashPass = bcryptjs.hashSync(genPassword, 10);
+                    var array = [
+                         {
+                              username: name.toLowerCase().split(' ').join(''),
+                              email,
+                              password: hashPass,
+                              profilePicture: googlePhotoUrl,
+                         },
+                    ];
+                    User.create(array).then((docs) => {
+                         if (docs) {
+                              res.json({ message: 'Sign fking up  successfully' });
+                         } else {
+                              next(error);
+                         }
+                    });
+                    res.status(200)
+                         .cookie('access_token', token, {
+                              httpOnly: true,
+                         })
+                         .json(returnData);
+               }
+          });
+     } catch (error) {
+          next(error);
+     }
+};
