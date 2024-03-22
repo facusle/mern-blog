@@ -77,18 +77,19 @@ export const google = async (req, res, next) => {
                               profilePicture: googlePhotoUrl,
                          },
                     ];
-                    User.create(array).then((docs) => {
-                         if (docs) {
+                    User.create(array).then((data) => {
+                         if (data) {
                               res.json({ message: 'Sign fking up  successfully' });
+                              const token = jwt.sign({ id: data._id }, process.env.JWT_SECRET_KEY);
+                              res.status(200)
+                                   .cookie('access_token', token, {
+                                        httpOnly: true,
+                                   })
+                                   .json(returnData);
                          } else {
                               next(error);
                          }
                     });
-                    res.status(200)
-                         .cookie('access_token', token, {
-                              httpOnly: true,
-                         })
-                         .json(returnData);
                }
           });
      } catch (error) {
