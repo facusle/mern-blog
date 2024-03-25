@@ -6,8 +6,8 @@ import { BsDribbble, BsFacebook, BsGithub, BsInstagram, BsTwitter } from 'react-
 
 export default function Footers() {
      return (
-          <Footer className="container mx-auto shadow-none">
-               <div className="w-full">
+          <Footer className="py-5 shadow-none">
+               <div className="container mx-auto">
                     <div className="grid justify-between w-full sm:flex sm:justify-between md:flex md:grid-cols-1">
                          <div className="mb-5 md:mb-0">
                               <Link to="/" className="self-center block mt-3 text-sm font-semibold whitespace-nowrap sm:text-xl dark:text-white">
