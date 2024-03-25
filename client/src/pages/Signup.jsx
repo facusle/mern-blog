@@ -33,8 +33,8 @@ export default function Signup() {
                     navigate('/sign-in');
                }
           } catch (error) {
-               return setErrorMessage(error);
                setLoading(false);
+               return setErrorMessage(error);
           }
      };
      return (
