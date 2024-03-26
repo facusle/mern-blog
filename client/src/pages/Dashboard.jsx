@@ -16,9 +16,9 @@ export default function Dashboard() {
      }, [location.search]);
 
      return (
-          <div>
+          <div className="container gap-5 mx-auto md:flex">
                <div className="">
-                    <DashSidebar tab={tab} />
+                    <DashSidebar tab={tab} setTab={setTab} />
                </div>
                {tab === 'profile' && <DashProfile />}
           </div>

@@ -2,15 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Sidebar } from 'flowbite-react';
 import { HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser, HiViewBoards } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
+import { set } from 'mongoose';
 
-export default function DashSidebar(data) {
-     const { tab } = data ? data : false;
+export default function DashSidebar({ tab, setTab }) {
+     const url = new URL(window.location.href);
+
      function handleOpenTab(id) {
-          console.log(id);
+          setTab(id);
+          url.searchParams.set('tab', id);
+          window.history.replaceState(null, '', url);
      }
      return (
           <div className="my-5 md:my-10">
-               <Sidebar aria-label="Sidebar with logo branding example">
+               <Sidebar aria-label="Sidebar with logo branding example" className="w-full md:w-64">
                     <div className="flex p-2 mb-3 text-lg font-bold border-b border-gray-950 dark:border-white">
                          <svg
                               className="w-6 h-6 text-gray-800 dark:text-white"
@@ -34,11 +38,11 @@ export default function DashSidebar(data) {
                     <Sidebar.Items>
                          <Sidebar.ItemGroup>
                               <Sidebar.Item
+                                   className="cursor-pointer"
                                    id="profile"
-                                   href="/dashboard?tab=profile"
                                    icon={HiUser}
                                    active={tab === 'profile'}
-                                   onClick={(e) => handleOpenTab(e.currentTarget.id)}
+                                   onClick={(id) => handleOpenTab(id.currentTarget.id)}
                               >
                                    Profile
                               </Sidebar.Item>
