@@ -7,9 +7,11 @@ export const test = (req, res) => {
 };
 
 export const updateUser = async (req, res, next) => {
-     console.log('req.user', req.user);
      if (req.user?.id !== req.params.userId) {
           return next(errorHandler(403, 'You do not have permission to update this user'));
+     }
+     if (req.body.username == '' || req.body.email == '') {
+          return next(errorHandler(400, 'username and email are required'));
      }
      if (req.body.password) {
           if (req.body.password.length < 6) {
@@ -30,41 +32,39 @@ export const updateUser = async (req, res, next) => {
           if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
                return next(errorHandler(400, 'Username only contain letters and numbers'));
           }
-          try {
-               console.log('da vao');
-               // await User.findByIdAndUpdate(
-               //      req.params.id,
-               //      {
-               //           username: req.body.username,
-               //           email: req.body.email,
-               //           profilePicture: req.body.profilePicture,
-               //           password: req.body.password,
-               //      },
-               //      (err, doc) => {
-               //           if (err) {
-               //                console.log(`Error: ` + err);
-               //           } else {
-               //                console.log('feawfwefwaf');
-               //           }
-               //      },
-               // );
-               const updateUser = await User.findByIdAndUpdate(
-                    req.params.userId,
-                    {
-                         $set: {
-                              username: req.body.username,
-                              email: req.body.email,
-                              profilePicture: req.body.profilePicture,
-                              password: req.body.password,
-                         },
+     }
+     try {
+          // await User.findByIdAndUpdate(
+          //      req.params.id,
+          //      {
+          //           username: req.body.username,
+          //           email: req.body.email,
+          //           profilePicture: req.body.profilePicture,
+          //           password: req.body.password,
+          //      },
+          //      (err, doc) => {
+          //           if (err) {
+          //                console.log(`Error: ` + err);
+          //           } else {
+          //                console.log('feawfwefwaf');
+          //           }
+          //      },
+          // );
+          const updateUser = await User.findByIdAndUpdate(
+               req.params.userId,
+               {
+                    $set: {
+                         username: req.body.username,
+                         email: req.body.email,
+                         profilePicture: req.body.profilePicture,
+                         password: req.body.password,
                     },
-                    { new: true },
-               );
-               const { password: passStoreInfinity, ...returnData } = updateUser._doc;
-               res.status(200).json(returnData);
-          } catch (er) {
-               console.log('toang', er);
-               next(errorHandler(404, 'loi khong xac dinh'));
-          }
+               },
+               { new: true },
+          );
+          const { password: passStoreInfinity, ...returnData } = updateUser._doc;
+          res.status(200).json(returnData);
+     } catch (er) {
+          next(errorHandler(404, 'bug when update user failed'));
      }
 };

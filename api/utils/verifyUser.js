@@ -10,7 +10,7 @@ export const verifyToken = (req, res, next) => {
           if (err) {
                return next(errorHandler(401, 'Unauthorized'));
           }
-          console.log('user', user);
+          console.log('verify User Id: ', user);
           req.user = user;
           next();
      });
