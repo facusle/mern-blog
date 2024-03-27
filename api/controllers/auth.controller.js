@@ -55,7 +55,7 @@ export const signin = async (req, res, next) => {
 export const google = async (req, res, next) => {
      const { email, name, googlePhotoUrl } = req.body;
      try {
-          User.findOne({
+          await User.findOne({
                email,
           }).then((data) => {
                if (data) {
@@ -69,18 +69,19 @@ export const google = async (req, res, next) => {
                } else {
                     const genPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
                     const hashPass = bcryptjs.hashSync(genPassword, 10);
-                    var array = [
-                         {
-                              username: name.toLowerCase().split(' ').join(''),
-                              email,
-                              password: hashPass,
-                              profilePicture: googlePhotoUrl,
-                         },
-                    ];
-                    User.create(array).then((data) => {
-                         if (data) {
-                              res.json({ message: 'Sign fking up  successfully' });
-                              const token = jwt.sign({ id: data._id }, process.env.JWT_SECRET_KEY);
+                    var user = {
+                         username: name.toLowerCase().split(' ').join(''),
+                         email,
+                         password: hashPass,
+                         profilePicture: googlePhotoUrl,
+                    };
+                    User.create(user).then((dataCreateUser) => {
+                         if (dataCreateUser) {
+                              console.log('vàox');
+                              console.log('data._doc', dataCreateUser);
+                              // res.json({ message: 'Sign fking up  successfully' });
+                              const token = jwt.sign({ id: dataCreateUser._id }, process.env.JWT_SECRET_KEY);
+                              const { password: passStoreInfinity, ...returnData } = dataCreateUser._doc;
                               res.status(200)
                                    .cookie('access_token', token, {
                                         httpOnly: true,

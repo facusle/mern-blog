@@ -27,8 +27,10 @@ export default function OAuth() {
                          googlePhotoUrl: resultsFromGG.user.photoURL,
                     }),
                });
-               const data = await res.json();
-               if (res.ok) {
+               if (!res.ok) {
+                    throw new Error('Failed to authenticate with Google');
+               } else {
+                    const data = await res.json();
                     dispatch(signInSuccess(data));
                     navigate('/');
                }
