@@ -1,12 +1,13 @@
-import { Alert, Button, TextInput } from 'flowbite-react';
+import { Alert, Button, Modal, TextInput } from 'flowbite-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { updateStart, updateFailure, updateSuccess } from '../redux/user/userSlice';
+import { updateStart, updateFailure, updateSuccess, deleteStart, deleteSuccess, deleteFailure } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
+import { HiOutlineExclamationCircle } from 'react-icons/hi';
 
 export default function DashProfile() {
      const { currentUser } = useSelector((state) => state.user);
@@ -18,6 +19,9 @@ export default function DashProfile() {
      const [imageUploading, setImageUploading] = useState(false);
      const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
      const [updateUserError, setUpdateUserError] = useState(null);
+     // delete user
+     const [showModal, setShowModal] = useState(false);
+     // end delete user
      const filePickerRef = useRef();
      const dispatch = useDispatch();
 
@@ -111,6 +115,21 @@ export default function DashProfile() {
           } catch (error) {}
      };
      console.log('formData', formData);
+     const handleDeleteUser = async (e) => {
+          e.preventDefault();
+          dispatch(deleteStart());
+          const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+               method: 'DELETE',
+               headers: { 'Content-Type': 'application/json' },
+          });
+          const data = res.json();
+          if (!res.ok) {
+               dispatch(deleteFailure(data.message));
+               setUpdateUserError(data.message);
+          } else {
+               dispatch(deleteSuccess(data.message));
+          }
+     };
      return (
           <div className="flex flex-col items-center flex-1 pt-2 pb-10 space-y-5 md:pt-10">
                <h1 className="text-lg font-bold">Profile</h1>
@@ -184,7 +203,9 @@ export default function DashProfile() {
                     </Button>
                </form>
                <div className="p-5 flex justify-between max-w-full mt-5 text-red-500 w-[400px]">
-                    <span className="cursor-pointer">Delete Account</span>
+                    <span onClick={() => setShowModal(true)} className="cursor-pointer">
+                         Delete Account
+                    </span>
                     <span className="cursor-pointer">Sign Out</span>
                </div>
                {updateUserSuccess && (
@@ -197,6 +218,23 @@ export default function DashProfile() {
                          {updateUserError}
                     </Alert>
                )}
+               <Modal show={showModal} size="md" onClose={() => setShowModal(false)} popup>
+                    <Modal.Header />
+                    <Modal.Body>
+                         <div className="text-center">
+                              <HiOutlineExclamationCircle className="mx-auto mb-4 text-gray-400 h-14 w-14 dark:text-gray-200" />
+                              <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure to delete this account?</h3>
+                              <div className="flex justify-center gap-4">
+                                   <Button color="failure" onClick={handleDeleteUser}>
+                                        {"Yes, I'm sure"}
+                                   </Button>
+                                   <Button color="gray" onClick={() => setShowModal(false)}>
+                                        No, cancel
+                                   </Button>
+                              </div>
+                         </div>
+                    </Modal.Body>
+               </Modal>
           </div>
      );
 }

@@ -29,7 +29,11 @@ export default function Header() {
                     </Button>
 
                     {currentUser ? (
-                         <Dropdown arrowIcon={false} inline label={<Avatar alt="user" img={currentUser?.profilePicture} rounded />}>
+                         <Dropdown
+                              arrowIcon={false}
+                              inline
+                              label={<Avatar className="avatar" alt="user" img={currentUser?.profilePicture} rounded></Avatar>}
+                         >
                               <Dropdown.Header>
                                    <span className="block text-sm">@{currentUser?.username}</span>
                                    <span className="block text-sm truncate">@{currentUser?.email}</span>
