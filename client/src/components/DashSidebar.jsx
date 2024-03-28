@@ -4,7 +4,7 @@ import { HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser, Hi
 import { Link } from 'react-router-dom';
 import { set } from 'mongoose';
 
-export default function DashSidebar({ tab, setTab }) {
+export default function DashSidebar({ tab, setTab, signOut }) {
      const url = new URL(window.location.href);
 
      function handleOpenTab(id) {
@@ -55,11 +55,8 @@ export default function DashSidebar({ tab, setTab }) {
                               <Sidebar.Item href="#" icon={HiShoppingBag}>
                                    Products
                               </Sidebar.Item>
-                              <Sidebar.Item href="#" icon={HiArrowSmRight}>
-                                   Sign In
-                              </Sidebar.Item>
-                              <Sidebar.Item href="#" icon={HiTable}>
-                                   Sign Up
+                              <Sidebar.Item href="#" icon={HiArrowSmRight} onClick={signOut}>
+                                   Sign Out
                               </Sidebar.Item>
                          </Sidebar.ItemGroup>
                     </Sidebar.Items>

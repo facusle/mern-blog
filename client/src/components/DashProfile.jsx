@@ -9,7 +9,7 @@ import { updateStart, updateFailure, updateSuccess, deleteStart, deleteSuccess, 
 import { useDispatch } from 'react-redux';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 
-export default function DashProfile() {
+export default function DashProfile({ signOut }) {
      const { currentUser } = useSelector((state) => state.user);
      const [imageFile, setImageFile] = useState(null);
      const [imageUrl, setImageUrl] = useState(null);
@@ -206,7 +206,9 @@ export default function DashProfile() {
                     <span onClick={() => setShowModal(true)} className="cursor-pointer">
                          Delete Account
                     </span>
-                    <span className="cursor-pointer">Sign Out</span>
+                    <span className="cursor-pointer" onClick={signOut}>
+                         Sign Out
+                    </span>
                </div>
                {updateUserSuccess && (
                     <Alert color={'success'} className="mt-5">
